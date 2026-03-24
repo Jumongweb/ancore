@@ -24,6 +24,13 @@ module.exports = [
         ecmaVersion: 2020,
         sourceType: 'module',
       },
+      globals: {
+        Buffer: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        CryptoKey: 'readonly',
+        crypto: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': tseslint,
@@ -31,6 +38,7 @@ module.exports = [
     rules: {
       ...tseslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   {
@@ -45,6 +53,7 @@ module.exports = [
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
 ];

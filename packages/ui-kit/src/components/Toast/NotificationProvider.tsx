@@ -4,7 +4,7 @@ import { Toast } from './Toast';
 
 export type ToastVariant = 'success' | 'error' | 'info';
 
-export interface Toast {
+export interface ToastItem {
   id: string;
   message: string;
   variant: ToastVariant;
@@ -16,14 +16,14 @@ interface NotificationContextValue {
 
 export const NotificationContext = React.createContext<NotificationContextValue | null>(null);
 
-type Action =
-  | { type: 'ADD'; toast: Toast }
-  | { type: 'REMOVE'; id: string };
+type Action = { type: 'ADD'; toast: ToastItem } | { type: 'REMOVE'; id: string };
 
-function reducer(state: Toast[], action: Action): Toast[] {
+function reducer(state: ToastItem[], action: Action): ToastItem[] {
   switch (action.type) {
-    case 'ADD': return [...state, action.toast];
-    case 'REMOVE': return state.filter(t => t.id !== action.id);
+    case 'ADD':
+      return [...state, action.toast];
+    case 'REMOVE':
+      return state.filter((t) => t.id !== action.id);
   }
 }
 
@@ -47,13 +47,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           aria-live="polite"
           className="fixed bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none"
         >
-          {toasts.map(t => (
+          {toasts.map((t) => (
             <Toast
               key={t.id}
               id={t.id}
               message={t.message}
               variant={t.variant}
-              onDismiss={id => dispatch({ type: 'REMOVE', id })}
+              onDismiss={(id) => dispatch({ type: 'REMOVE', id })}
             />
           ))}
         </div>,
