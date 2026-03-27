@@ -1,41 +1,34 @@
-declare namespace chrome {
-  namespace runtime {
-    interface Manifest {
-      name: string;
-      version: string;
-    }
+type ChromeRuntimeManifest = {
+  name: string;
+  version: string;
+};
 
-    interface InstalledDetails {
-      reason: string;
-    }
+type ChromeInstalledDetails = {
+  reason: string;
+};
 
-    interface MessageSender {}
+type ChromeMessageSender = object;
 
-    interface OnInstalledEvent {
-      addListener(callback: (details: InstalledDetails) => void): void;
-    }
-
-    interface OnStartupEvent {
+declare const chrome: {
+  runtime: {
+    getManifest(): ChromeRuntimeManifest;
+    onInstalled: {
+      addListener(callback: (details: ChromeInstalledDetails) => void): void;
+    };
+    onStartup: {
       addListener(callback: () => void): void;
-    }
-
-    interface OnMessageEvent {
+    };
+    onMessage: {
       addListener(
         callback: (
           message: unknown,
-          sender: MessageSender,
+          sender: ChromeMessageSender,
           sendResponse: (response: unknown) => void
         ) => boolean | void
       ): void;
-    }
-
-    function getManifest(): Manifest;
-
-    const onInstalled: OnInstalledEvent;
-    const onStartup: OnStartupEvent;
-    const onMessage: OnMessageEvent;
-  }
-}
+    };
+  };
+};
 
 const logPrefix = '[ancore-extension/background]';
 
@@ -59,11 +52,7 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener(
-  (
-    message: unknown,
-    _sender: chrome.runtime.MessageSender,
-    sendResponse: (response: unknown) => void
-  ) => {
+  (message: unknown, _sender: ChromeMessageSender, sendResponse: (response: unknown) => void) => {
     const runtimeMessage = message as RuntimeMessage;
 
     if (runtimeMessage.type === 'wallet/ping') {
