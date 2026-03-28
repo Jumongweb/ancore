@@ -159,7 +159,7 @@ impl AncoreAccount {
     /// Execute a transaction: validate nonce, perform cross-contract call, increment nonce.
     ///
     /// # Security
-    /// - Caller must be owner (session key auth not yet wired)
+    /// - Caller must be owner OR provide a valid session key signature
     /// - `expected_nonce` must match current nonce (replay protection)
     /// - Nonce is incremented before invocation (checks-effects-interactions)
     pub fn execute(
@@ -266,6 +266,10 @@ impl AncoreAccount {
         let owner = Self::get_owner(env.clone())?;
         owner.require_auth();
 
+        // Increment version number
+        let current_version = Self::get_version(env.clone());
+        env.storage().instance().set(&DataKey::Version, &(current_version + 1));
+
         env.deployer().update_current_contract_wasm(new_wasm_hash.clone());
 
         // Extend instance TTL to keep contract alive
@@ -347,27 +351,8 @@ impl AncoreAccount {
             ledgers_to_live,
         );
     }
-
-    /// Upgrade the contract
-    pub fn upgrade(env: Env, new_wasm_hash: BytesN<32>) -> Result<(), ContractError> {
-        let owner = Self::get_owner(env.clone())?;
-        owner.require_auth();
-
-        let current_version: u32 = env.storage().instance().get(&DataKey::Version).unwrap_or(0);
-        env.storage().instance().set(&DataKey::Version, &(current_version + 1));
-        
-        env.deployer().update_current_contract_wasm(new_wasm_hash);
-        
-        env.storage().instance().extend_ttl(INSTANCE_BUMP_THRESHOLD, INSTANCE_BUMP_AMOUNT);
-
-        Ok(())
-    }
-
-    /// Get contract version
-    pub fn get_version(env: Env) -> u32 {
-        env.storage().instance().get(&DataKey::Version).unwrap_or(0)
-    }
 }
+
 
 #[cfg(test)]
 mod test {
@@ -645,3 +630,5 @@ mod test {
         assert_eq!(result_u64, 0); // Proves the value made it back from the cross-contract call
     }
 }
+
+
