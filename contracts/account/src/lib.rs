@@ -114,8 +114,6 @@ const DAY_IN_LEDGERS: u32 = 17280; // 24 hours * 60 min * 60 sec / 5 sec per led
 const INSTANCE_BUMP_AMOUNT: u32 = 30 * DAY_IN_LEDGERS; // 30 days
 const INSTANCE_BUMP_THRESHOLD: u32 = 15 * DAY_IN_LEDGERS; // 15 days
 
-/// Permission bit for execute operations
-const PERMISSION_EXECUTE: u32 = 1;
 /// Permission bit for session-key execute authorization.
 /// Issue #188: Session keys must have this permission to invoke transactions.
 /// Without this bit set, execute() returns InsufficientPermission error.
@@ -442,6 +440,25 @@ mod test {
     }
 
     #[test]
+    fn test_get_owner_before_initialize_returns_not_initialized() {
+        let env = Env::default();
+        let contract_id = env.register_contract(None, AncoreAccount);
+        let client = AncoreAccountClient::new(&env, &contract_id);
+
+        let result = client.try_get_owner();
+        assert_eq!(result, Err(Ok(ContractError::NotInitialized)));
+    }
+
+    #[test]
+    fn test_get_version_defaults_to_zero_before_initialize_for_compatibility() {
+        let env = Env::default();
+        let contract_id = env.register_contract(None, AncoreAccount);
+        let client = AncoreAccountClient::new(&env, &contract_id);
+
+        assert_eq!(client.get_version(), 0);
+    }
+
+    #[test]
     fn test_initialize_emits_event() {
         let env = Env::default();
         let contract_id = env.register_contract(None, AncoreAccount);
@@ -574,6 +591,28 @@ mod test {
 
         client.revoke_session_key(&session_pk);
         assert!(!client.has_session_key(&session_pk));
+    }
+
+    #[test]
+    fn test_revoke_session_key_removes_session_key_storage_entry() {
+        let env = Env::default();
+        let contract_id = env.register_contract(None, AncoreAccount);
+        let client = AncoreAccountClient::new(&env, &contract_id);
+
+        let owner = Address::generate(&env);
+        client.initialize(&owner);
+
+        env.mock_all_auths();
+
+        let session_pk = BytesN::from_array(&env, &[2u8; 32]);
+        let expires_at = 1000u64;
+        let permissions = Vec::new(&env);
+
+        client.add_session_key(&session_pk, &expires_at, &permissions);
+        assert!(client.get_session_key(&session_pk).is_some());
+
+        client.revoke_session_key(&session_pk);
+        assert!(client.get_session_key(&session_pk).is_none());
     }
 
     #[test]
@@ -742,6 +781,21 @@ mod test {
 
         let session_key = client.get_session_key(&session_pk);
         assert!(session_key.is_some());
+    }
+
+    #[test]
+    fn test_refresh_session_key_ttl_unknown_key_returns_session_key_not_found() {
+        let env = Env::default();
+        let contract_id = env.register_contract(None, AncoreAccount);
+        let client = AncoreAccountClient::new(&env, &contract_id);
+
+        let owner = Address::generate(&env);
+        client.initialize(&owner);
+
+        let unknown_session_pk = BytesN::from_array(&env, &[9u8; 32]);
+        let result = client.try_refresh_session_key_ttl(&unknown_session_pk);
+
+        assert_eq!(result, Err(Ok(ContractError::SessionKeyNotFound)));
     }
 
     #[test]
