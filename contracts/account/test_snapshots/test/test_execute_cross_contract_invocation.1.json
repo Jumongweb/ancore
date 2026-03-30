@@ -15,6 +15,7 @@
               "function_name": "add_session_key",
               "args": [
                 {
+                  "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                   "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                 },
                 {
@@ -56,6 +57,7 @@
                   "symbol": "SessionKey"
                 },
                 {
+                  "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                   "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                 }
               ]
@@ -76,6 +78,7 @@
                       "symbol": "SessionKey"
                     },
                     {
+                      "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                       "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                     }
                   ]
@@ -108,6 +111,7 @@
                         "symbol": "public_key"
                       },
                       "val": {
+                        "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                         "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                       }
                     }
@@ -366,6 +370,7 @@
             "data": {
               "vec": [
                 {
+                  "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                   "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                 },
                 {
@@ -400,6 +405,7 @@
             "data": {
               "vec": [
                 {
+                  "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                   "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                 },
                 {
@@ -459,6 +465,7 @@
                       "symbol": "SessionKey"
                     },
                     {
+                      "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
                       "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                     }
                   ]
@@ -476,6 +483,10 @@
                   "u64": 0
                 },
                 {
+                  "bytes": "f682e3a85049e574965fe10d57b64ea510ea2c183936fa1c959db6d4de08bc6c"
+                },
+                {
+                  "bytes": "a6ad18ee917a7d96d7aeb126e78f4ad5970f2d712272e9ed6965bb4d5d224ec5cf74f9f2d46d823d93417a2be2d03d0073918b2ce2ff9cfd703713e83417e606"
                   "bytes": "b5b1237cb22a5e0e674e6ba67bd987f314f552ab6086f368375c29f43064400f"
                 },
                 {
