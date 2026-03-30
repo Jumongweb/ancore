@@ -440,6 +440,16 @@ mod test {
     }
 
     #[test]
+    fn test_get_owner_before_initialize_returns_not_initialized() {
+        let env = Env::default();
+        let contract_id = env.register_contract(None, AncoreAccount);
+        let client = AncoreAccountClient::new(&env, &contract_id);
+
+        let result = client.try_get_owner();
+        assert_eq!(result, Err(Ok(ContractError::NotInitialized)));
+    }
+
+    #[test]
     fn test_initialize_emits_event() {
         let env = Env::default();
         let contract_id = env.register_contract(None, AncoreAccount);
